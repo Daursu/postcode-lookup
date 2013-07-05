@@ -17,7 +17,8 @@ class Postcode {
 		$address_url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $lat . ',' . $lng . '&sensor=false';
 		$address_json = json_decode(file_get_contents($address_url));
 		$address_data = $address_json->results[0]->address_components;
-		$street = str_replace('Dr', 'Drive', $address_data[1]->long_name);
+		// $street = str_replace('Dr', 'Drive', $address_data[1]->long_name);
+		$street = (isset($address_data[1]->long_name)) ? $address_data[1]->long_name : '';
 		$town = (isset($address_data[2]))? $address_data[2]->long_name : '';
 		$county = (isset($address_data[3])) ? $address_data[3]->long_name : '';
 
