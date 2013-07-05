@@ -1,5 +1,5 @@
 {
-    "name": "lodge/postcode",
+    "name": "lodge/postcode-lookup",
     "description": "A postcode lookup utility using the Google Maps API",
     "version": "0.1.0",
     "authors": [
