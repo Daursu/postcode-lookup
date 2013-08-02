@@ -2,10 +2,10 @@
 
 class Postcode {
 
-	public function lookup($postcode)
+	public function getCoordinates($address)
 	{
-		// Sanitize the postcode:
-		$search_code = urlencode($postcode);
+		// Sanitize the address:
+		$search_code = urlencode($address);
 
 		// Retrieve the latitude and longitude
 		$url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' . $search_code . '&sensor=false';
@@ -13,8 +13,19 @@ class Postcode {
 		$lat = $json->results[0]->geometry->location->lat;
 		$lng = $json->results[0]->geometry->location->lng;
 
+		return array(
+			'latitude'  => $lat,
+			'longitude' => $lng
+		);
+	}
+
+	public function lookup($postcode)
+	{
+		// Sanitize the postcode:
+		$coords = $this->getCoordinates($postcode);
+
 		// A second call will now retrieve the address
-		$address_url  = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $lat . ',' . $lng . '&sensor=false';
+		$address_url  = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $coords['latitude'] . ',' . $coords['longitude'] . '&sensor=false';
 		$address_json = json_decode(file_get_contents($address_url));
 		$address_data = $address_json->results[0]->address_components;
 
@@ -63,8 +74,8 @@ class Postcode {
 			'sublocality'   => $sublocality,
 			'town'          => $town,
 			'county'        => $county,
-			'latitude'      => $lat,
-			'longitude'     => $lng
+			'latitude'      => $coords['latitude'],
+			'longitude'     => $coords['longitude']
 		);
 
 		return $array;
