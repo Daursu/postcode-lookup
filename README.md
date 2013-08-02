@@ -39,3 +39,15 @@ This will return an array containing:
 * latitude
 * longitude
 * postcode
+
+**Update:** added new method:
+```
+	Postcode::getCoordinates($address);
+```
+Returns the latitude and longitude as an array:
+```
+array(
+	'latitude'  => 1.521231
+	'longitude' => -23.012123
+)
+```
