@@ -68,6 +68,7 @@ class Postcode {
                    $postcode == $this->mutatePostcode($component->long_name))
                 {
                     $address_data = $current_address->address_components;
+                    break 2;
                 }
             }
         }
