@@ -1,7 +1,7 @@
 {
     "name": "lodge/postcode-lookup",
     "description": "A postcode lookup utility using the Google Maps API, ready to use with Laravel 4.",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "license": "MIT",
     "authors": [
         {
@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": ">=5.3.0",
-        "illuminate/support": "4.0.x"
+        "illuminate/support": "4.1.x"
     },
     "autoload": {
         "classmap": [
