@@ -129,6 +129,7 @@ class Postcode {
 			'sublocality'   => $sublocality,
 			'town'          => $town,
 			'county'        => $county,
+			'country'       => $country,
 			'latitude'      => $coords['latitude'],
 			'longitude'     => $coords['longitude']
 		);
