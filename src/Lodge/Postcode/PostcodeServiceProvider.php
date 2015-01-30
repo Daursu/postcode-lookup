@@ -18,7 +18,8 @@ class PostcodeServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		$this->package('lodge/postcode');
+		if (method_exists($this, 'package'))
+			$this->package('lodge/postcode');
 	}
 
 	/**
@@ -41,7 +42,7 @@ class PostcodeServiceProvider extends ServiceProvider {
 	 */
 	public function provides()
 	{
-		return array();
+		return array('postcode');
 	}
 
 }
