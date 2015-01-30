@@ -13,7 +13,7 @@ First of all you need to require the package inside your `composer.json` file:
 ```
 {
     "require": {
-        "lodge/postcode": "0.*"
+        "lodge/postcode-lookup": "0.*"
     }
 }
 ```
