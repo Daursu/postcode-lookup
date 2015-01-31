@@ -13,7 +13,7 @@ First of all you need to require the package inside your `composer.json` file:
 ```
 {
     "require": {
-        "lodge/postcode-lookup": "0.*"
+        "lodge/postcode-lookup": "dev-master"
     }
 }
 ```
@@ -44,9 +44,9 @@ From within your controller you can call:
 
 ```
 	$postcode = Postcode::lookup('SW3 4SZ');
-	
+
 	print_r($postcode);
-	
+
 	// Outputs
 	array(
 		'postcode'      => 'SW34SZ',
@@ -65,15 +65,15 @@ From within your controller you can call:
 
 ```
 	$coordinates = Postcode::getCoordinates($address);
-	
+
 	print_r($coordinates);
-	
+
 	// Outputs
 	array(
 		'latitude'  => 1.521231
 		'longitude' => -23.012123
 	)
-	
+
 ```
 
 ## Usage outside of Laravel
@@ -83,12 +83,12 @@ From within your controller you can call:
 	// And assuming that you have required the composer
 	// autoload.php file
 	require 'vendor/autoload.php';
-	
+
 	$postcode = new Lodge\Postcode\Postcode();
 	$results = $postcode->lookup('SW3 4SZ');
-	
+
 	print_r($results);
-	
+
 	// Outputs
 	array(
 		'postcode'      => 'SW34SZ',
@@ -108,9 +108,9 @@ If you need to get just the latitude and longitude for an address you can use:
 ```
 	$postcode = new Lodge\Postcode\Postcode();
 	$results = $postcode->getCoordinates('SW3 4SZ');
-	
+
 	print_r($results);
-	
+
 	// Outputs
 	array(
 		'latitude'  => 51.489117499999999
@@ -120,14 +120,14 @@ If you need to get just the latitude and longitude for an address you can use:
 
 ## Changelog
 
-* **Version 0.2** 
+* **Version 0.2**
 	* Laravel 5 compatible
 	* Fixed facade namespace, that would not adhere to PSR-0
 	* Updated documentation
 
-* **Version 0.1** 
+* **Version 0.1**
  	* Initial Release
- 	
+
 ## License
 
 The MIT License (MIT)
