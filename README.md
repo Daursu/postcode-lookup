@@ -120,6 +120,9 @@ If you need to get just the latitude and longitude for an address you can use:
 
 ## Changelog
 
+* **Version 0.3**
+	* Removed deprecated `bind` call and instantiate as a singleton instead.
+
 * **Version 0.2**
 	* Laravel 5 compatible
 	* Fixed facade namespace, that would not adhere to PSR-0
