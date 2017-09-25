@@ -148,7 +148,7 @@ class Postcode {
     private function addApiKeyToUrl($url)
     {
         return ($api_key = \Config::get('postcode-lookup::apikey')) ?
-            $url . $api_key :
+            $url . '&key=' . $api_key :
             $url;
     }
     
