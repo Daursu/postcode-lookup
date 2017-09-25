@@ -10,16 +10,8 @@ class Postcode {
 		// Retrieve the latitude and longitude
 		$url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' . $search_code . '&sensor=false';
 
-		// If Google Maps API fails, catch it and throw a better error
-		try
-		{
-			$json = json_decode(file_get_contents($url));
-		}
-		catch(\Exception $e)
-		{
-			throw new ServiceUnavailableException;
-		}
-
+		$json = $this->callGoogleApi($url);
+		
 		if(!empty($json->results))
 		{
 			$lat = $json->results[0]->geometry->location->lat;
@@ -55,7 +47,8 @@ class Postcode {
 
 		// A second call will now retrieve the address
 		$address_url  = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $coords['latitude'] . ',' . $coords['longitude'] . '&sensor=false';
-		$address_json = json_decode(file_get_contents($address_url));
+
+		$address_json = $this->callGoogleApi($address_url);
 
 		// The correct result is not always the first one, so loop through results here
 		foreach($address_json->results as $current_address)
@@ -135,5 +128,26 @@ class Postcode {
 
 		return $array;
 	}
+
+    private function callGoogleApi($url) 
+    {
+        $url = $this->addApiKeyToUrl($url);
+        $json = json_decode(file_get_contents($url));
+        $this->checkApiError($json);
+        return $json;
+    }
+
+    private function addApiKeyToUrl($url)
+    {
+        return ($api_key = \Config::get('postcode-lookup::apikey')) ?
+            $url . '&key=' . $api_key :
+            $url;
+    }
+    
+    private function checkApiError($json)
+    {
+        if (property_exists($json, 'error_message'))
+            throw new ServiceUnavailableException($json->error_message);
+    }
 
 }
