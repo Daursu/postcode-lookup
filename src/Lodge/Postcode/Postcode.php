@@ -10,16 +10,8 @@ class Postcode {
 		// Retrieve the latitude and longitude
 		$url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' . $search_code . '&sensor=false';
 
-		// If Google Maps API fails, catch it and throw a better error
-		try
-		{
-			$json = $this->callGoogleApi($url);
-		}
-		catch(\Exception $e)
-		{
-			throw new ServiceUnavailableException;
-		}
-
+		$json = $this->callGoogleApi($url);
+		
 		if(!empty($json->results))
 		{
 			$lat = $json->results[0]->geometry->location->lat;
