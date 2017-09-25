@@ -35,6 +35,8 @@ class PostcodeServiceProvider extends ServiceProvider
         $this->app->singleton('postcode', function () {
             return new Postcode();
         });
+        
+        \Config::package('lodge/postcode-lookup','postcode');
     }
 
     /**
