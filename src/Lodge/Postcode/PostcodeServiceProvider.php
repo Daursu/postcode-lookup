@@ -33,7 +33,7 @@ class PostcodeServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('postcode', function () {
-            return new Postcode();
+            return new Postcode(config('postcode-lookup::apikey'));
         });
     }
 
