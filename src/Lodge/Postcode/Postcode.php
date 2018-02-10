@@ -4,7 +4,7 @@ class Postcode {
 	protected $postcode;
 	protected $country;
 
-	public function __constructor($apiKey = null) {
+	public function __construct($apiKey = null) {
 		$this->apiKey = $apiKey;
 	}
 
