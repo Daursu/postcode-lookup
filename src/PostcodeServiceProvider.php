@@ -20,8 +20,10 @@ class PostcodeServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if (method_exists($this, 'package')) {
-            $this->package('lodge/postcode');
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__.'/../config/postcode.php' => config_path('postcode.php'),
+            ], 'postcode-config');
         }
     }
 
@@ -32,8 +34,12 @@ class PostcodeServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->mergeConfigFrom(
+            __DIR__.'/../config/postcode.php', 'postcode'
+        );
+
         $this->app->singleton('postcode', function () {
-            return new Postcode(config('postcode-lookup::apikey'));
+            return new Postcode(config('postcode.google_api_key'));
         });
     }
 
