@@ -1,5 +1,9 @@
-<?php namespace Lodge\Postcode;
-class Postcode {
+<?php
+
+namespace Lodge\Postcode;
+
+class Postcode
+{
 	protected $apiKey;
 	protected $postcode;
 	protected $country;
@@ -186,5 +190,4 @@ class Postcode {
         if (property_exists($json, 'error_message'))
             throw new ServiceUnavailableException($json->error_message);
     }
-
 }
