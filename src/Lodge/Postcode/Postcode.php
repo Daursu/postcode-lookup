@@ -1,9 +1,19 @@
 <?php namespace Lodge\Postcode;
-
 class Postcode {
+	protected $apiKey;
+	protected $postcode;
+	protected $country;
+
+	public function __construct($apiKey = null) {
+		$this->apiKey = $apiKey;
+	}
 
 	public function getCoordinates($address)
 	{
+		if (!empty($this->country)) {
+			$address = trim($address) . ' ' . $this->country;
+		}
+		
 		// Sanitize the address:
 		$search_code = urlencode($address);
 
@@ -11,14 +21,7 @@ class Postcode {
 		$url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' . $search_code . '&sensor=false';
 
 		// If Google Maps API fails, catch it and throw a better error
-		try
-		{
-			$json = json_decode(file_get_contents($url));
-		}
-		catch(\Exception $e)
-		{
-			throw new ServiceUnavailableException;
-		}
+		$json = $this->callGoogleApi($url);
 
 		if(!empty($json->results))
 		{
@@ -33,6 +36,12 @@ class Postcode {
 
 		// We must have nothing if we've got here
 		return array();
+	}
+
+	public function setCountry($country = null) {
+		$this->country = $country;
+
+		return $this;
 	}
 
 	public function mutatePostcode($postcode)
@@ -55,7 +64,8 @@ class Postcode {
 
 		// A second call will now retrieve the address
 		$address_url  = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $coords['latitude'] . ',' . $coords['longitude'] . '&sensor=false';
-		$address_json = json_decode(file_get_contents($address_url));
+
+		$address_json = $this->callGoogleApi($address_url);
 
 		// The correct result is not always the first one, so loop through results here
 		foreach($address_json->results as $current_address)
@@ -135,5 +145,46 @@ class Postcode {
 
 		return $array;
 	}
+
+	public function getApiKey() {
+		return !empty($this->apiKey) ? $this->apiKey : null;
+	}
+
+	public function setApiKey($apiKey = null) {
+		$this->apiKey = $apiKey;
+
+		return $this;
+	}
+
+    private function callGoogleApi($url) 
+    {
+		$url = $this->addApiKeyToUrl($url);
+		
+		try
+		{
+			$json = json_decode(file_get_contents($url));
+		}
+		catch(\Exception $e)
+		{
+			throw new ServiceUnavailableException;
+		}
+		
+		$this->checkApiError($json);
+		
+        return $json;
+    }
+
+    private function addApiKeyToUrl($url)
+    {
+        return ($api_key = $this->getApiKey()) ?
+            $url . $api_key :
+            $url;
+	}
+    
+    private function checkApiError($json)
+    {
+        if (property_exists($json, 'error_message'))
+            throw new ServiceUnavailableException($json->error_message);
+    }
 
 }
