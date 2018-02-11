@@ -43,7 +43,7 @@ class GoogleApi
     public function fetch($url)
     {
         if ($this->apiKey) {
-            $url .= '&key'.$this->apiKey;
+            $url .= '&key='.$this->apiKey;
         }
 
         try {
