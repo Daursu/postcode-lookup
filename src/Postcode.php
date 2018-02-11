@@ -5,13 +5,6 @@ namespace Lodge\Postcode;
 class Postcode
 {
     /**
-     * Google API key.
-     *
-     * @var string
-     */
-    protected $apiKey;
-
-    /**
      * Default country to search in.
      *
      * @var string
@@ -19,12 +12,19 @@ class Postcode
     protected $country;
 
     /**
+     * Google API instance.
+     *
+     * @var GoogleApi
+     */
+    protected $api;
+
+    /**
      * Postcode constructor.
      * @param string $apiKey
      */
     public function __construct($apiKey = null)
     {
-        $this->apiKey = $apiKey;
+        $this->api = new GoogleApi($apiKey);
     }
 
     /**
@@ -49,7 +49,7 @@ class Postcode
         // A second call will now retrieve the address
         $address_url  = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $coords['latitude'] . ',' . $coords['longitude'] . '&sensor=false';
 
-        $address_json = $this->callGoogleApi($address_url);
+        $address_json = $this->api->fetch($address_url);
 
         // The correct result is not always the first one, so loop through results here
         foreach ($address_json->results as $current_address) {
@@ -133,7 +133,7 @@ class Postcode
         $url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' . $search_code . '&sensor=false';
 
         // If Google Maps API fails, catch it and throw a better error
-        $json = $this->callGoogleApi($url);
+        $json = $this->api->fetch($url);
 
         if(!empty($json->results)) {
             $lat = $json->results[0]->geometry->location->lat;
@@ -175,13 +175,16 @@ class Postcode
     }
 
     /**
-     * Returns the Google API key.
+     * Replaces the Google API.
      *
-     * @return null|string
+     * @param  mixed $api
+     * @return $this
      */
-    public function getApiKey()
+    public function setApi($api)
     {
-        return $this->apiKey;
+        $this->api = $api;
+
+        return $this;
     }
 
     /**
@@ -192,53 +195,8 @@ class Postcode
      */
     public function setApiKey($apiKey)
     {
-        $this->apiKey = $apiKey;
+        $this->api->setApiKey($apiKey);
 
         return $this;
-    }
-
-    /**
-     * Calls the Google API.
-     *
-     * @param  string $url
-     * @return mixed
-     */
-    private function callGoogleApi($url) 
-    {
-        $url = $this->addApiKeyToUrl($url);
-
-        try {
-            $json = json_decode(file_get_contents($url));
-        } catch(\Exception $e) {
-            throw new ServiceUnavailableException;
-        }
-
-        $this->checkApiError($json);
-
-        return $json;
-    }
-
-    /**
-     * Appends the API key to the url.
-     *
-     * @param  string $url
-     * @return string
-     */
-    private function addApiKeyToUrl($url)
-    {
-        return ($api_key = $this->getApiKey())
-            ? $url . '&key=' . $api_key
-            : $url;
-    }
-
-    /**
-     * @param  \stdClass $json
-     * @throws ServiceUnavailableException
-     */
-    private function checkApiError($json)
-    {
-        if (property_exists($json, 'error_message')) {
-            throw new ServiceUnavailableException($json->error_message);
-        }
     }
 }
