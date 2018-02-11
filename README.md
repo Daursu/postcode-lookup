@@ -4,7 +4,7 @@ Postcode Lookup
 
 PHP library that performs a postcode lookup using Google Maps API.
 
-#### Compatible with Laravel 4 & 5.
+#### Compatible with Laravel 5.
 
 ## Quick start
 
@@ -13,10 +13,12 @@ First of all you need to require the package inside your `composer.json` file:
 ```
 {
     "require": {
-        "lodge/postcode-lookup": "dev-master"
+        "lodge/postcode-lookup": "0.4.0"
     }
 }
 ```
+
+Note: for Laravel 4 use version `0.3.0`
 
 ### Register with Laravel
 
@@ -37,6 +39,13 @@ A facade is also provided, so in order to register it add the following to your 
 	'Postcode' => 'Lodge\Postcode\Facades\Postcode',
 );
 ```
+
+Publish the configuration file.
+```
+php artisan vendor:publish --provider="Lodge\Postcode\PostcodeServiceProvider"
+```
+
+Set your Google API key inside `config/postcode.php` file.
 
 ## Usage with Laravel
 
@@ -84,7 +93,8 @@ From within your controller you can call:
 	// autoload.php file
 	require 'vendor/autoload.php';
 
-	$postcode = new Lodge\Postcode\Postcode();
+    $googleApiKey = 'your-google-api-key';
+	$postcode = new Lodge\Postcode\Postcode($googleApiKey);
 	$results = $postcode->lookup('SW3 4SZ');
 
 	print_r($results);
@@ -106,7 +116,8 @@ From within your controller you can call:
 If you need to get just the latitude and longitude for an address you can use:
 
 ```
-	$postcode = new Lodge\Postcode\Postcode();
+    $googleApiKey = 'your-google-api-key';
+	$postcode = new Lodge\Postcode\Postcode($googleApiKey);
 	$results = $postcode->getCoordinates('SW3 4SZ');
 
 	print_r($results);
@@ -119,6 +130,11 @@ If you need to get just the latitude and longitude for an address you can use:
 ```
 
 ## Changelog
+* **Version 0.4**
+    * Added configuration file and the ability to set the Google API key.
+    * Updated namespaces to PSR-4
+    * Added test stubs.
+    * Dropped support for Laravel 4.
 
 * **Version 0.3**
 	* Removed deprecated `bind` call and instantiate as a singleton instead.
