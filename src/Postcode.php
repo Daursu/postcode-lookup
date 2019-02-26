@@ -2,6 +2,9 @@
 
 namespace Lodge\Postcode;
 
+use Lodge\Postcode\Gateways\GatewayInterface;
+use Lodge\Postcode\Gateways\GoogleApi;
+
 class Postcode
 {
     /**
@@ -20,11 +23,12 @@ class Postcode
 
     /**
      * Postcode constructor.
-     * @param string $apiKey
+     *
+     * @param \Lodge\Postcode\Gateways\GatewayInterface $apiGateway
      */
-    public function __construct($apiKey = null)
+    public function __construct(GatewayInterface $apiGateway)
     {
-        $this->api = new GoogleApi($apiKey);
+        $this->api = $apiGateway;
     }
 
     /**

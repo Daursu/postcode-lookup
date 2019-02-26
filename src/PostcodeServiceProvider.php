@@ -3,6 +3,7 @@
 namespace Lodge\Postcode;
 
 use Illuminate\Support\ServiceProvider;
+use Lodge\Postcode\Gateways\GoogleApi;
 
 class PostcodeServiceProvider extends ServiceProvider
 {
@@ -39,7 +40,9 @@ class PostcodeServiceProvider extends ServiceProvider
         );
 
         $this->app->singleton('postcode', function () {
-            return new Postcode(config('postcode.google_api_key'));
+            return new Postcode(
+                new GoogleApi(config('postcode.google_api_key'))
+            );
         });
     }
 

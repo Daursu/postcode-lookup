@@ -1,8 +1,10 @@
 <?php
 
-namespace Lodge\Postcode;
+namespace Lodge\Postcode\Gateways;
 
-class GoogleApi
+use Lodge\Postcode\ServiceUnavailableException;
+
+class GoogleApi implements GatewayInterface
 {
     /**
      * Google API key.
