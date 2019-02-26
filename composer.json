@@ -9,7 +9,8 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
+        "ext-json": "*",
+        "php": ">=7.1",
         "illuminate/support": "4.x|~5.0"
     },
     "require-dev": {

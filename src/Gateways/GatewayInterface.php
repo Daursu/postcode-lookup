@@ -2,16 +2,27 @@
 
 namespace Lodge\Postcode\Gateways;
 
-use Lodge\Postcode\ServiceUnavailableException;
+use Lodge\Postcode\Coordinates;
 
 interface GatewayInterface
 {
     /**
-     * Calls the remote API.
+     * Returns coordinates from the given address.
      *
-     * @param  string $url
-     * @return \stdClass
-     * @throws ServiceUnavailableException
+     * @param  string $address
+     * @return \Lodge\Postcode\Coordinates
+     * @throws \Lodge\Postcode\Exceptions\AddressNotFoundException
+     * @throws \Lodge\Postcode\ServiceUnavailableException
      */
-    public function fetch($url);
+    public function geocodeFromAddress($address);
+
+    /**
+     * Returns the best address found at the given coordinates.
+     *
+     * @param \Lodge\Postcode\Coordinates $coordinates
+     * @param  string                     $postcode
+     * @return \Lodge\Postcode\Address
+     * @throws \Lodge\Postcode\Exceptions\AddressNotFoundException
+     */
+    public function geocodeLatLng(Coordinates $coordinates, $postcode);
 }
