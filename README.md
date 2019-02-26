@@ -24,20 +24,20 @@ Note: for Laravel 4 use version `0.3.0`
 
 Register the service provider. Inside your `app.php` config file add:
 
-```
-'providers' => array(
+```php
+'providers' => [
 	...
 	'Lodge\Postcode\PostcodeServiceProvider',
-)
+]
 ```
 
 A facade is also provided, so in order to register it add the following to your `app.php` config file:
 
-```
-'aliases' => array(
+```php
+'aliases' => [
 	...
 	'Postcode' => 'Lodge\Postcode\Facades\Postcode',
-);
+];
 ```
 
 Publish the configuration file.
@@ -51,85 +51,124 @@ Set your Google API key inside `config/postcode.php` file.
 
 From within your controller you can call:
 
-```
-	$postcode = Postcode::lookup('SW3 4SZ');
+```php
+$address = Postcode::lookup('SW3 4SZ');
 
-	print_r($postcode);
+// Usage
+$address->getPostcode();
+$address->getStreetNumber();
+$address->getStreet();
+$address->getTown(); // -> London
+$address->getCounty(); // -> Greater London
+$address->getCountry(); // -> United Kingdom
+$address->getCoordinates()->getLatitude(); // -> 51.489117499999999
+$address->getCoordinates()->getLongitude(); // -> -0.1579016
 
-	// Outputs
-	array(
-		'postcode'      => 'SW34SZ',
-		'street_number' => '',
-		'street'        => '',
-		'sublocality'   => '',
-		'town'          => 'London',
-		'county'        => 'Greater London',
-		'country'       => 'United Kingdom',
-		'latitude'      => 51.489117499999999,
-		'longitude'     => -0.1579016
-	);
+// $address->toArray();
+// Outputs
+[
+    'postcode'      => 'SW34SZ',
+    'street_number' => '',
+    'street'        => '',
+    'sublocality'   => '',
+    'town'          => 'London',
+    'county'        => 'Greater London',
+    'country'       => 'United Kingdom',
+    'latitude'      => 51.489117499999999,
+    'longitude'     => -0.1579016
+]
 ```
 
 #### Get the Latitude and Longitude of an address
 
-```
-	$coordinates = Postcode::getCoordinates($address);
+```php
+$coordinates = Postcode::getCoordinates($address);
 
-	print_r($coordinates);
+// Usage
+$coordinates->getLatitude();
+$coordinates->getLongitude();
 
-	// Outputs
-	array(
-		'latitude'  => 1.521231
-		'longitude' => -23.012123
-	)
-
+// Output
+// 51.489117499999999
+// -0.1579016
 ```
 
 ## Usage outside of Laravel
 
-```
-	// First of all you need to instantiate the class
-	// And assuming that you have required the composer
-	// autoload.php file
-	require 'vendor/autoload.php';
+```php
+// First of all you need to instantiate the class
+// And assuming that you have required the composer
+// autoload.php file
+require 'vendor/autoload.php';
 
-    $googleApiKey = 'your-google-api-key';
-	$postcode = new Lodge\Postcode\Postcode($googleApiKey);
-	$results = $postcode->lookup('SW3 4SZ');
+$googleApiKey = 'your-google-api-key';
+$postcode = new Lodge\Postcode\Postcode($googleApiKey);
+$address = $postcode->lookup('SW3 4SZ');
 
-	print_r($results);
+// Usage
+$address->getPostcode();
+$address->getStreetNumber();
+$address->getStreet();
+$address->getTown(); // -> London
+$address->getCounty(); // -> Greater London
+$address->getCountry(); // -> United Kingdom
+$address->getCoordinates()->getLatitude(); // -> 51.489117499999999
+$address->getCoordinates()->getLongitude(); // -> -0.1579016
 
-	// Outputs
-	array(
-		'postcode'      => 'SW34SZ',
-		'street_number' => '',
-		'street'        => '',
-		'sublocality'   => '',
-		'town'          => 'London',
-		'county'        => 'Greater London',
-		'country'       => 'United Kingdom',
-		'latitude'      => 51.489117499999999,
-		'longitude'     => -0.1579016
-	)
+// $address->toArray();
+// Outputs
+[
+    'postcode'      => 'SW34SZ',
+    'street_number' => '',
+    'street'        => '',
+    'sublocality'   => '',
+    'town'          => 'London',
+    'county'        => 'Greater London',
+    'country'       => 'United Kingdom',
+    'latitude'      => 51.489117499999999,
+    'longitude'     => -0.1579016
+]
 ```
 
 If you need to get just the latitude and longitude for an address you can use:
 
+```php
+$googleApiKey = 'your-google-api-key';
+$postcode = new Lodge\Postcode\Postcode(new Lodge\Postocde\Gateways\GoogleApi($googleApiKey));
+$coordinates = $postcode->getCoordinates('SW3 4SZ');
+
+// Usage
+$coordinates->getLatitude();
+$coordinates->getLongitude();
+
+// Output
+// 51.489117499999999
+// -0.1579016
 ```
-    $googleApiKey = 'your-google-api-key';
-	$postcode = new Lodge\Postcode\Postcode($googleApiKey);
-	$results = $postcode->getCoordinates('SW3 4SZ');
 
-	print_r($results);
-
-	// Outputs
-	array(
-		'latitude'  => 51.489117499999999
-		'longitude' => -0.1579016
-	)
+## Upgrade from 0.4 to 0.5
+* Wrap your calls to `->getCoordinates()` and `->lookup()` in a try catch block
+```php
+try {
+    $address = Postcode::getCoordinates($address)
+} catch (AddressNotFoundException $e) {
+    // do something
+}
+```
+* The return type for `->getCoordinates()` is now an instance of `Lodge\Postcode\Coordinates` instead of an `array`
+* The return type for `->lookup()` is now an instance of `Lodge\Postcode\Address` instead of an `array`
+* If you are manually creating a new instance of `Lodge\Postcode\Postcode` then you will need to inject an instance of `GoogleApi`
+```php
+$postcode = new Lodge\Postcode\Postcode(new Lodge\Postocde\Gateways\GoogleApi($googleApiKey));
 ```
 
 ## Changelog
+* **Version 0.5**
+    * This version introduces breaking changes
+    * Minimum supported PHP version is now 7.1
+    * Use an object instead of returning an array
+    * Add a gateway interface, so that we can connect to multiple geocode backends
+    * Throw exceptions when an address is not found
 * **Version 0.4**
     * Added configuration file and the ability to set the Google API key.
     * Updated namespaces to PSR-4
