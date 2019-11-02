@@ -43,7 +43,7 @@ class PostcodeLookupTest extends TestCase
         $postcode = $this->postcode->mutatePostcode('sw3 4sz');
 
         // It contains uppercase letters and no spaces
-        $this->assertFalse(strpos(' ', $postcode));
+        $this->assertFalse(strpos($postcode, ' '));
         $this->assertEquals('SW34SZ', $postcode);
     }
 
