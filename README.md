@@ -4,7 +4,7 @@ Postcode Lookup
 
 PHP library that performs a postcode lookup using Google Maps API.
 
-#### Compatible with Laravel 4-7.
+#### Compatible with Laravel 4-8.
 
 ## Quick start
 
@@ -13,7 +13,7 @@ First of all you need to require the package inside your `composer.json` file:
 ```
 {
     "require": {
-        "lodge/postcode-lookup": "0.4.0"
+        "lodge/postcode-lookup": "0.7.0"
     }
 }
 ```
@@ -130,6 +130,9 @@ If you need to get just the latitude and longitude for an address you can use:
 ```
 
 ## Changelog
+* **Version 0.7**
+    * Added support for Laravel 8
+
 * **Version 0.6**
     * Added support for Laravel 7
 
